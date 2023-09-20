@@ -1,3 +1,4 @@
+Edited by MarshKUSRC : pumin.su@ku.th
 # :computer: Computer Science Project
 ## :raised_hand: ระบบแปลภาษามือไทยหมวดคำทักทายสำหรับบุคคลทั่วไป :raised_hand:
 
