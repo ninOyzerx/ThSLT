@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="container">
+  <h1>Development of Web Application to Detect ThSL Alphabet via Hand Gesture</h1>
+  <h2>ระบบการสร้างภาพจากตัวอักษรภาษาไทยผ่านการแสดงท่าทางของมือ</h2>
+  <p class="des">
+    <a href="" target="_blank" style="text-decoration: none;"></a> 
+  </p>
+  <div class="camera">
+    <img src="{{ url_for('video_feed') }}">
+  </div>
+
+  <p class="note">หมายเหตุ: หากคุณไม่ได้ทำท่าทางหรืออยู่นิ่ง ๆ ระบบจะประมวลผลแสดงข้อความออกมาเป็นคำว่า รอ</p>
+
+  <!--<div class="boder">
+    <div class="c-how">
+      <div class="howto">
+         <h3>Test</h3>
+        <ol class="list-howto">
+          
+        </ol> 
+      </div>
+    </div>
+  </div>-->
+
+</div>
+
+{% endblock %}

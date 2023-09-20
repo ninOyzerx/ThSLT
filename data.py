@@ -1,0 +1,92 @@
+import cv2
+import numpy as np
+import os
+
+from functions import *
+
+### 4. Setup Folders for Collection
+# create folder data if it doesn't exist
+if not os.path.exists(DATA_PATH):
+    os.makedirs(DATA_PATH)
+
+# Loop through actions
+for action in actions: 
+    # Loop through sequences aka videos
+    for sequence in range(no_sequences):
+        sequence_folder = os.path.join(DATA_PATH, action, str(sequence))
+        if not os.path.exists(sequence_folder):
+            os.makedirs(sequence_folder)
+        else:
+            # If the folder already exists, check if there are existing data files
+            existing_files = os.listdir(sequence_folder)
+            if len(existing_files) > 0:
+                print(f"Data already exists for {action} - Sequence {sequence}. Skipping...")
+                continue  # Skip this sequence if data already exists
+
+### 5. Collect Keypoint Values for Training and Testing
+# *ไม่ต้องรันซ้ำ หากเก็บข้อมูลไว้แล้ว*
+cap = cv2.VideoCapture(0)
+
+# Set mediapipe model 
+with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
+    
+    # NEW LOOP
+    # Loop through actions
+    for action in actions:
+        # Loop through sequences aka videos
+        for sequence in range(no_sequences):
+            # Loop through video length aka sequence length
+            for frame_num in range(sequence_length):
+       
+                # Read feed
+                ret, frame = cap.read()
+
+                # Make detections
+                image, results = mediapipe_detection(frame, holistic)
+                print(results)
+                
+                # Draw landmarks
+                draw_landmarks(image, results)
+
+                # NEW Apply wait logic
+                if frame_num == 0: 
+                    cv2.putText(image, 'STARTING COLLECTION', (120,200), 
+                               cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255, 0), 4, cv2.LINE_AA)
+                    cv2.putText(image, 'Collecting frames for {}'.format(action), (15,20), 
+                               cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1, cv2.LINE_AA)
+                    cv2.putText(image, 'Video Number {}'.format(sequence), (15,40), 
+                               cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1, cv2.LINE_AA)
+                    # Show to screen
+                    cv2.imshow('OpenCV Feed', image)
+                    cv2.waitKey(2000)
+                else: 
+                    cv2.putText(image, 'Collecting frames for {}'.format(action), (15,20), 
+                               cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1, cv2.LINE_AA)
+                    cv2.putText(image, 'Video Number {}'.format(sequence), (15,40), 
+                               cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1, cv2.LINE_AA)
+                    # Show to screen
+                    cv2.imshow('OpenCV Feed', image)
+
+                # NEW Export keypoints
+                keypoints = extract_keypoints(results)
+                npy_path = os.path.join(DATA_PATH, action, str(sequence), str(frame_num))
+                print(npy_path)
+                #np.save(npy_path, keypoints)
+                
+                # Check if the data file already exists
+                if not os.path.exists(npy_path + '.npy'):
+                    np.save(npy_path, keypoints)
+                    print(f"Saved data for {action} - Sequence {sequence} - Frame {frame_num}")
+                else:
+                    print(f"Data already exists for {action} - Sequence {sequence} - Frame {frame_num}. Skipping...")
+
+
+                # Show to screen
+                cv2.imshow('OpenCV Feed', image)
+
+        # Break gracefully
+        if cv2.waitKey(15) & 0xFF == ord('q'):
+            break
+        
+    cap.release()
+    cv2.destroyAllWindows()
