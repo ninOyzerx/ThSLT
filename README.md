@@ -1,6 +1,6 @@
 Edited by MarshKUSRC : pumin.su@ku.th
-# :computer: Computer Science Project
-## :raised_hand: ระบบแปลภาษามือไทยหมวดคำทักทายสำหรับบุคคลทั่วไป :raised_hand:
+# :computer: Information Technology Project
+## :raised_hand: ระบบตรวจจับท่าทางภาษามือเพื่อแสดงตัวอักษรภาษาไทย 42 ตัว:raised_hand:
 
 ### :wrench: เครื่องมือและภาษาที่ใช้ในระบบ
   * Visual Studio Code
